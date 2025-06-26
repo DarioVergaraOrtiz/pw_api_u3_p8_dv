@@ -4,11 +4,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import jakarta.persistence.TypedQuery;
 import uce.edu.web.api.repository.modelo.Profesor;
 
 @Transactional
 @ApplicationScoped
-public class ProfesorRepoImpl implements IProfesorRepo{
+public class ProfesorRepoImpl implements IProfesorRepo {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -17,5 +19,11 @@ public class ProfesorRepoImpl implements IProfesorRepo{
     public Profesor seleccionarPorId(Integer id) {
         return this.entityManager.find(Profesor.class, id);
     }
-    
+
+    @Override
+    public List<Profesor> seleccionarTodos() {
+        TypedQuery<Profesor> query = this.entityManager.createQuery("SELECT e FROM Profesor e", Profesor.class);
+        return query.getResultList();
+    }
+
 }
