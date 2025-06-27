@@ -1,10 +1,11 @@
 package uce.edu.web.api.service;
 
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import uce.edu.web.api.repository.IEstudianteRepo;
 import uce.edu.web.api.repository.modelo.Estudiante;
-import java.util.List;
 
 @ApplicationScoped
 public class EstudianteServiceImpl implements IEstudianteService{
@@ -21,6 +22,26 @@ public class EstudianteServiceImpl implements IEstudianteService{
     @Override
     public List<Estudiante> consultarTodos() {
         return this.estudianteRepo.seleccionarTodos();
+    }
+
+    @Override
+    public void guardar(Estudiante estudiante) {
+        this.estudianteRepo.insertar(estudiante);
+    }
+
+    @Override
+    public void actualizarPorId(Integer id, Estudiante estudiante) {
+        this.estudianteRepo.actualizarPorId(id, estudiante);
+    }
+
+    @Override
+    public void actualizarParcialPorId(Integer id, Estudiante estudiante) {
+        this.estudianteRepo.actualizarParcialPordId(id, estudiante);
+    }
+
+    @Override
+    public void eliminarPorId(Integer id) {
+        this.estudianteRepo.borrarPorId(id);
     }
     
 }
