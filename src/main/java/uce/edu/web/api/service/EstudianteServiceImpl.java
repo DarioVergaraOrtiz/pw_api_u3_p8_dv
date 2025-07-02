@@ -20,8 +20,8 @@ public class EstudianteServiceImpl implements IEstudianteService{
     }
 
     @Override
-    public List<Estudiante> consultarTodos() {
-        return this.estudianteRepo.seleccionarTodos();
+    public List<Estudiante> consultarTodos(String genero) {
+        return this.estudianteRepo.seleccionarTodos(genero);
     }
 
     @Override

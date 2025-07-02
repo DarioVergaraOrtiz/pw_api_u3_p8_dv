@@ -2,6 +2,8 @@ package uce.edu.web.api.controller;
 
 import java.util.List;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -12,6 +14,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.service.IEstudianteService;
@@ -31,14 +34,24 @@ public class EstudianteController {
         return this.estudianteService.buscarPorId(id);
     }
 
+    //?genero=F&provincia=pichincha
     @GET
     @Path("")
-    public List<Estudiante> consultarTodos(){
-        return this.estudianteService.consultarTodos();
+    @Operation(
+        summary= "Consultar estudiantes",
+        description= "Esta capacidad permite consultar estudiantes de la base de datos"
+    )
+    public List<Estudiante> consultarTodos(@QueryParam("genero") String genero,@QueryParam("provincia") String provincia){
+        System.out.println(provincia);
+        return this.estudianteService.consultarTodos(genero);
     }
 
     @POST
     @Path("")
+    @Operation(
+        summary= "Guardar estudiante",
+        description= "Esta capacidad permite guardar en la base de datos un estudiante"
+    )
     public void guardar( Estudiante estudiante) {
         this.estudianteService.guardar(estudiante);
         
