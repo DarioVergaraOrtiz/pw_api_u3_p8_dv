@@ -28,39 +28,18 @@ public class EstudianteRepoImpl implements IEstudianteRepo{
     }
 
     @Override
-    public void actualizarPorId(Integer id, Estudiante estudiante) {
-        Estudiante estudianteExistente = this.entityManager.find(Estudiante.class, id);
-        if (estudianteExistente != null) {
-            estudianteExistente.setNombre(estudiante.getNombre());
-            estudianteExistente.setApellido(estudiante.getApellido());
-            estudianteExistente.setFechaNacimiento(estudiante.getFechaNacimiento());
-            this.entityManager.merge(estudianteExistente);
-        }
+    public void actualizarPorId(Estudiante estudiante) {
+        this.entityManager.merge(estudiante);
     }
 
     @Override
-    public void actualizarParcialPordId(Integer id, Estudiante estudiante) {
-        Estudiante estudianteExistente = this.entityManager.find(Estudiante.class, id);
-        if (estudianteExistente != null) {
-            if (estudiante.getNombre() != null) {
-                estudianteExistente.setNombre(estudiante.getNombre());
-            }
-            if (estudiante.getApellido() != null) {
-                estudianteExistente.setApellido(estudiante.getApellido());
-            }
-            if (estudiante.getFechaNacimiento() != null) {
-                estudianteExistente.setFechaNacimiento(estudiante.getFechaNacimiento());
-            }
-            this.entityManager.merge(estudianteExistente);
-        }
+    public void actualizarParcialPordId(Estudiante estudiante) {
+        this.entityManager.merge(estudiante);
     }
 
     @Override
     public void borrarPorId(Integer id) {
-        Estudiante estudiante = this.entityManager.find(Estudiante.class, id);
-        if (estudiante != null) {
-            this.entityManager.remove(estudiante);
-        }
+        this.entityManager.remove(this.seleccionarporId(id));
     }
 
     @Override

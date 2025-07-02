@@ -30,13 +30,13 @@ public class EstudianteServiceImpl implements IEstudianteService{
     }
 
     @Override
-    public void actualizarPorId(Integer id, Estudiante estudiante) {
-        this.estudianteRepo.actualizarPorId(id, estudiante);
+    public void actualizarPorId(Estudiante estudiante) {
+        this.estudianteRepo.actualizarPorId(estudiante);
     }
 
     @Override
-    public void actualizarParcialPorId(Integer id, Estudiante estudiante) {
-        this.estudianteRepo.actualizarParcialPordId(id, estudiante);
+    public void actualizarParcialPorId(Estudiante estudiante) {
+        this.estudianteRepo.actualizarParcialPordId(estudiante);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class EstudianteController {
     @Path("/{id}")
     public void actualizarPorId(@PathParam("id") Integer id,Estudiante estudiante){
         estudiante.setId(id);
-        this.estudianteService.actualizarPorId(id, estudiante);
+        this.estudianteService.actualizarPorId(estudiante);
 
     }
 
@@ -52,18 +52,17 @@ public class EstudianteController {
     public void actualizarParcialPorId(@PathParam("id") Integer id,Estudiante estudiante){
 
         estudiante.setId(id);
-        Estudiante estudianteExistente = this.estudianteService.buscarPorId(id);
-        if (estudianteExistente.getApellido() != null) {
-            estudiante.setApellido(estudianteExistente.getApellido());
+        Estudiante e = this.estudianteService.buscarPorId(id);
+        if (estudiante.getApellido() != null) {
+            e.setApellido(estudiante.getApellido());            
         }
-        if (estudianteExistente.getFechaNacimiento() != null) {
-            estudiante.setFechaNacimiento(estudianteExistente.getFechaNacimiento());
+        if (estudiante.getNombre() != null) {
+            e.setNombre(estudiante.getNombre());            
         }
-        if (estudianteExistente.getNombre() != null) {
-            estudiante.setNombre(estudianteExistente.getNombre());
-        }
-
-        this.estudianteService.actualizarParcialPorId(id, estudianteExistente);
+        if (estudiante.getFechaNacimiento() != null) {
+            e.setFechaNacimiento(estudiante.getFechaNacimiento());            
+        }        
+        this.estudianteService.actualizarParcialPorId(e);
     }
 
     @DELETE
