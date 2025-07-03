@@ -1,7 +1,5 @@
 package uce.edu.web.api.controller;
 
-import java.util.List;
-
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import jakarta.inject.Inject;
@@ -16,13 +14,12 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.service.IEstudianteService;
 
 
 @Path("/estudiantes")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 public class EstudianteController {
     
     @Inject
@@ -30,24 +27,28 @@ public class EstudianteController {
 
     @GET
     @Path("/{id}")
-    public Estudiante consultarPorId(@PathParam("id") Integer id) {
-        return this.estudianteService.buscarPorId(id);
+    @Produces(MediaType.APPLICATION_XML)
+    public Response consultarPorId(@PathParam("id") Integer id) {
+
+        return Response.status(227).entity(this.estudianteService.buscarPorId(id)).build();
     }
 
     //?genero=F&provincia=pichincha
     @GET
     @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         summary= "Consultar estudiantes",
         description= "Esta capacidad permite consultar estudiantes de la base de datos"
     )
-    public List<Estudiante> consultarTodos(@QueryParam("genero") String genero,@QueryParam("provincia") String provincia){
+    public Response consultarTodos(@QueryParam("genero") String genero,@QueryParam("provincia") String provincia){
         System.out.println(provincia);
-        return this.estudianteService.consultarTodos(genero);
+        return Response.status(Response.Status.OK).entity(this.estudianteService.consultarTodos(genero)).build();
     }
 
     @POST
     @Path("")
+    @Consumes(MediaType.APPLICATION_XML)
     @Operation(
         summary= "Guardar estudiante",
         description= "Esta capacidad permite guardar en la base de datos un estudiante"

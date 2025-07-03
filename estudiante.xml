@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<estudiante>
+    <apellido>García</apellido>
+    <fechaNacimiento>2000-03-15T00:00:00</fechaNacimiento>
+    <genero>F</genero>
+    <nombre>María</nombre>
+</estudiante>
+
