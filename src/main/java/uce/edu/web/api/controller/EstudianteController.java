@@ -27,7 +27,7 @@ public class EstudianteController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response consultarPorId(@PathParam("id") Integer id) {
 
         return Response.status(227).entity(this.estudianteService.buscarPorId(id)).build();
@@ -48,27 +48,32 @@ public class EstudianteController {
 
     @POST
     @Path("")
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         summary= "Guardar estudiante",
         description= "Esta capacidad permite guardar en la base de datos un estudiante"
     )
-    public void guardar( Estudiante estudiante) {
+    public Response guardar( Estudiante estudiante) {
         this.estudianteService.guardar(estudiante);
-        
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
     @Path("/{id}")
-    public void actualizarPorId(@PathParam("id") Integer id, Estudiante estudiante){
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response actualizarPorId(@PathParam("id") Integer id, Estudiante estudiante){
         estudiante.setId(id);
         this.estudianteService.actualizarPorId(estudiante);
-
+        return Response.ok().build();
     }
 
     @PATCH
     @Path("/{id}")
-    public void actualizarParcialPorId(@PathParam("id") Integer id, Estudiante estudiante){
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response actualizarParcialPorId(@PathParam("id") Integer id, Estudiante estudiante){
 
         estudiante.setId(id);
         Estudiante e = this.estudianteService.buscarPorId(id);
@@ -82,11 +87,14 @@ public class EstudianteController {
             e.setFechaNacimiento(estudiante.getFechaNacimiento());            
         }        
         this.estudianteService.actualizarParcialPorId(e);
+        return Response.ok().build();
     }
 
     @DELETE
     @Path("/{id}")
-    public void eliminarPorId(@PathParam("id") Integer id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response eliminarPorId(@PathParam("id") Integer id) {
         this.estudianteService.eliminarPorId(id);
+        return Response.noContent().build();
     }
 }
