@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import uce.edu.web.api.repository.modelo.Estudiante;
+import uce.edu.web.api.service.to.EstudianteTo;
 
 @Transactional
 @ApplicationScoped
