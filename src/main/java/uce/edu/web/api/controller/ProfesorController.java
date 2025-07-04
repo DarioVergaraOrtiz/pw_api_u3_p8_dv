@@ -1,5 +1,6 @@
 package uce.edu.web.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -8,18 +9,23 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import uce.edu.web.api.repository.modelo.Hijo;
 import uce.edu.web.api.repository.modelo.Profesor;
 import uce.edu.web.api.service.IProfesorService;
+import uce.edu.web.api.service.to.ProfesorTo;
 
 @Path("/profesores")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ProfesorController {
     
     @Inject
@@ -27,14 +33,14 @@ public class ProfesorController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response consultarPorId(@PathParam("id") Integer id) {
-        return Response.status(Response.Status.OK).entity(this.profesorService.buscarPorId(id)).build();
+    public Response consultarPorId(@PathParam("id") Integer id,@Context UriInfo uriInfo) {
+        
+        ProfesorTo profe = this.profesorService.buscarPorId(id, uriInfo);
+        return Response.status(227).entity(profe).build();
     }
 
     @GET
     @Path("")
-    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         summary= "Consultar profesores",
         description= "Esta capacidad permite consultar profesores de la base de datos"
@@ -45,8 +51,6 @@ public class ProfesorController {
 
     @POST
     @Path("")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         summary= "Guardar profesor",
         description= "Esta capacidad permite guardar en la base de datos un profesor"
@@ -66,7 +70,7 @@ public class ProfesorController {
         return Response.ok().build();
     }
 
-    @PATCH
+/*  @PATCH
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -87,13 +91,31 @@ public class ProfesorController {
         }
         this.profesorService.actualizarParcialPorId(e);
         return Response.ok().build();
-    }
+    } */
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response eliminarPorId(@PathParam("id") Integer id) {
         this.profesorService.eliminarPorId(id);
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/{id}/hijos")
+    public List<Hijo> obtenerHijosPorId(@PathParam("id") Integer id){
+        
+        Hijo h1 = new Hijo();
+        h1.setNombre("calixtoProfesor");
+        
+        Hijo h2 = new Hijo();
+        h2.setNombre("darioProfesor");
+
+        List<Hijo> hijos = new ArrayList<>();
+
+        hijos.add(h1);
+        hijos.add(h2);
+
+        return hijos;
+        
     }
 }
