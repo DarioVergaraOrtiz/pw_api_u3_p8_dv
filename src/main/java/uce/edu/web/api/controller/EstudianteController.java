@@ -23,15 +23,19 @@ import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.repository.modelo.Hijo;
 import uce.edu.web.api.service.IEstudianteService;
 import uce.edu.web.api.service.to.EstudianteTo;
+import uce.edu.web.api.service.HijoService;
 
 
 @Path("/estudiantes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class EstudianteController  extends BaseControlador{
+public class EstudianteController {
     
     @Inject
     private IEstudianteService estudianteService;
+
+    @Inject
+    private HijoService hijoService;
 
     @GET
     @Path("/{id}")
@@ -102,19 +106,8 @@ public class EstudianteController  extends BaseControlador{
     @GET
     @Path("/{id}/hijos")
     public List<Hijo> obtenerHijosPorId(@PathParam("id") Integer id){
-        
-        Hijo h1 = new Hijo();
-        h1.setNombre("calixto");
-        
-        Hijo h2 = new Hijo();
-        h2.setNombre("dario");
 
-        List<Hijo> hijos = new ArrayList<>();
-
-        hijos.add(h1);
-        hijos.add(h2);
-
-        return hijos;
+        return this.hijoService.buscarPorEstudianteId(id);
         
     }
 }
