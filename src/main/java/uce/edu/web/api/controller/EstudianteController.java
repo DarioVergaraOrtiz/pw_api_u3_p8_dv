@@ -1,6 +1,7 @@
 package uce.edu.web.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -8,22 +9,23 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.repository.modelo.Hijo;
 import uce.edu.web.api.service.HijoService;
 import uce.edu.web.api.service.IEstudianteService;
 import uce.edu.web.api.service.mapper.EstudianteMapper;
 import uce.edu.web.api.service.to.EstudianteTo;
+
 
 
 @Path("/estudiantes")
@@ -39,6 +41,10 @@ public class EstudianteController {
 
     @GET
     @Path("/{id}")
+    @Operation(
+        summary= "Consultar estudiante por ID",
+        description= "Esta capacidad permite consultar un estudiante por su ID"
+    )
     public Response consultarPorId(@PathParam("id") Integer id,@Context UriInfo uriInfo) {
         
         EstudianteTo estu = EstudianteMapper.toTo(this.estudianteService.buscarPorId(id));
@@ -53,9 +59,14 @@ public class EstudianteController {
         summary= "Consultar estudiantes",
         description= "Esta capacidad permite consultar estudiantes de la base de datos"
     )
-    public Response consultarTodos(@QueryParam("genero") String genero,@QueryParam("provincia") String provincia){
+    public Response consultarTodos(@QueryParam("genero") String genero,
+                                   @QueryParam("provincia") String provincia){
         System.out.println(provincia);
-        return Response.status(Response.Status.OK).entity(this.estudianteService.consultarTodos(genero)).build();
+
+        List<EstudianteTo> estudiantes = this.estudianteService.consultarTodos(genero).stream()
+            .map(EstudianteMapper::toTo)
+            .collect(Collectors.toList());
+        return Response.status(Response.Status.OK).entity(estudiantes).build();
     }
 
     @POST
@@ -64,48 +75,59 @@ public class EstudianteController {
         summary= "Guardar estudiante",
         description= "Esta capacidad permite guardar en la base de datos un estudiante"
     )
-    public Response guardar( Estudiante estudiante) {
-        this.estudianteService.guardar(estudiante);
-        return Response.status(Response.Status.CREATED).build();
+    public void guardar(EstudianteTo estudianteTo) {
+        this.estudianteService.guardar(EstudianteMapper.toEntity(estudianteTo));
     }
 
     @PUT
     @Path("/{id}")
-    public Response actualizarPorId(@PathParam("id") Integer id, Estudiante estudiante){
-        estudiante.setId(id);
-        this.estudianteService.actualizarPorId(estudiante);
-        return Response.ok().build();
+    public void actualizarPorId(@PathParam("id") Integer id, EstudianteTo estudianteTo) {
+        estudianteTo.setId(id);
+        this.estudianteService.actualizarPorId(EstudianteMapper.toEntity(estudianteTo));
     }
 
-/*   @PATCH
+    @PATCH
     @Path("/{id}")
-    public Response actualizarParcialPorId(@PathParam("id") Integer id, Estudiante estudiante){
+    @Operation(
+        summary= "Actualizar parcialmente estudiante por ID",
+        description= "Esta capacidad permite actualizar parcialmente un estudiante por su ID"
+    )
+    public void actualizarParcialPorId(@PathParam("id") Integer id, EstudianteTo estudianteTo){
 
-        estudiante.setId(id);
-        Estudiante e = this.estudianteService.buscarPorId(id);
-        if (estudiante.getApellido() != null) {
-            e.setApellido(estudiante.getApellido());            
+        estudianteTo.setId(id);
+        EstudianteTo eTo = EstudianteMapper.toTo(this.estudianteService.buscarPorId(id));
+        if(estudianteTo.getApellido() != null) {
+            eTo.setApellido(estudianteTo.getApellido());
         }
-        if (estudiante.getNombre() != null) {
-            e.setNombre(estudiante.getNombre());            
+        if(estudianteTo.getNombre() != null) {
+            eTo.setNombre(estudianteTo.getNombre());
         }
-        if (estudiante.getFechaNacimiento() != null) {
-            e.setFechaNacimiento(estudiante.getFechaNacimiento());            
-        }        
-        this.estudianteService.actualizarParcialPorId(e);
-        return Response.ok().build();
-    } */
+        if(estudianteTo.getGenero() != null) {
+            eTo.setGenero(estudianteTo.getGenero());
+        }
+        if(estudianteTo.getFechaNacimiento() != null) {
+            eTo.setFechaNacimiento(estudianteTo.getFechaNacimiento());
+        }
+        this.estudianteService.actualizarParcialPorId(EstudianteMapper.toEntity(eTo));
+    } 
 
     @DELETE
     @Path("/{id}")
-    public Response eliminarPorId(@PathParam("id") Integer id) {
+    @Operation(
+        summary= "Eliminar estudiante por ID",
+        description= "Esta capacidad permite eliminar un estudiante por su ID"
+    )
+    public void eliminarPorId(@PathParam("id") Integer id) {
         this.estudianteService.eliminarPorId(id);
-        return Response.noContent().build();
     }
 
     //http://......../estudiantes/1/hijos GET
     @GET
     @Path("/{id}/hijos")
+    @Operation(
+        summary= "Consultar hijos por ID de estudiante",
+        description= "Esta capacidad permite consultar los hijos de un estudiante por su ID"
+    )
     public List<Hijo> obtenerHijosPorId(@PathParam("id") Integer id){
 
         return this.hijoService.buscarPorEstudianteId(id);
