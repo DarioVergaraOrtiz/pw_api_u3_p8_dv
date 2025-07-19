@@ -3,8 +3,12 @@ package uce.edu.web.api.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.ClaimValue;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -16,9 +20,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import uce.edu.web.api.repository.modelo.Hijo;
 import uce.edu.web.api.service.HijoService;
@@ -32,6 +36,13 @@ import uce.edu.web.api.service.to.EstudianteTo;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EstudianteController {
+
+    @Inject
+    JsonWebToken jwt;
+
+    @Inject
+    @Claim("sub")
+    ClaimValue<String> subject;
     
     @Inject
     private IEstudianteService estudianteService;
@@ -41,6 +52,7 @@ public class EstudianteController {
 
     @GET
     @Path("/{id}")
+    @RolesAllowed("admin")
     @Operation(
         summary= "Consultar estudiante por ID",
         description= "Esta capacidad permite consultar un estudiante por su ID"
